@@ -1,0 +1,17 @@
+{
+  "name": "cybret",
+  "version": "0.1.0",
+  "description": "Pull validated Cybret API and app findings into the editor, fix them in the repo, and mark status when the fix lands.",
+  "author": {
+    "name": "Cybret",
+    "email": "privacy@cybret.ai"
+  },
+  "homepage": "https://www.cybret.ai",
+  "repository": "https://github.com/CYBRET-AI/cybret-mcp",
+  "license": "MIT",
+  "keywords": ["security", "findings", "mcp", "vulnerabilities"],
+  "logo": "assets/icon.png",
+  "skills": "./skills/",
+  "rules": "./rules/",
+  "mcpServers": "./mcp.json"
+}

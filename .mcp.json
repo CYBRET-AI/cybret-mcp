@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "cybret": {
+      "type": "http",
+      "url": "https://mcp.cybret.ai/mcp"
+    }
+  }
+}
