@@ -20,7 +20,7 @@ The steps are the same in Cursor, Claude Code, Codex, and any other client that 
 
 ## Steps
 
-1. Call `list_open_findings`. The server returns the open findings for the credential's tenant. The 2026-10-07 server review found no severity, repository, or pagination arguments, so filter and sort on the client. If the result is an empty list, stop. Tell the user this credential has no open findings, and that findings show up after a scan at https://app.cybret.ai. Do not invent findings.
+1. Call `list_open_findings`. The published contract accepts an optional `severity` (`info`, `low`, `medium`, `high`, or `critical`), an optional `target` (a repo slug `owner/name` or a scan run id), and `limit` from 1 to 100 (default 25). Use those fields when the live schema still lists them, and narrow to this repository when a `target` matches it. If the result is an empty list, stop. Tell the user this credential has no open findings for that query, and that findings show up after a scan at https://app.cybret.ai. Do not invent findings.
 
 2. Rank what came back by severity, using the severity field in the payload. Recommend one finding, prefer one that maps to code in this repository, and continue with the finding the user picks. If they already named one, use that.
 
@@ -30,7 +30,7 @@ The steps are the same in Cursor, Claude Code, Codex, and any other client that 
 
 5. Open a pull request, or name the branch the user is already reviewing, and put the Cybret finding identifier in the pull request body. If this session cannot open a pull request, give the user the title, the body, and the commit that contains the fix.
 
-6. After the user confirms the fix is on a pull request, call `mark_status`. Use a status the user confirms and that the live schema allows. If the schema has a field for a pull request URL, pass the URL. The server review describes that link field, but the live schema wins if the name differs. Do not mark a finding resolved before the fix exists. If the tool result contains an error payload, treat that as failure and show it. Do not claim the status changed.
+6. After the user confirms the fix is on a pull request, call `mark_status`. The published contract requires `finding_id` and `status` (`open`, `fixed`, or `false_positive`). Pass `link_pr` as `owner/repo#n` or the pull request URL when the live schema has that field. Pass `note` when the schema requires it (`false_positive`, or `fixed` without verify or retest proof). Linking a pull request does not by itself close the finding; set `status` to `fixed` only when the user confirms that. The live schema wins if a name differs. Do not mark a finding fixed before the fix exists. If the tool result contains an error payload, treat that as failure and show it. Do not claim the status changed.
 
 ## Stop
 

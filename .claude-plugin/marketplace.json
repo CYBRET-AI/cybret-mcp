@@ -2,7 +2,7 @@
   "name": "cybret",
   "owner": {
     "name": "Cybret",
-    "email": "privacy@cybret.ai",
+    "email": "hello@cybret.ai",
     "url": "https://www.cybret.ai"
   },
   "description": "Cybret plugins for coding agents. Validated security findings and remediation status.",
@@ -15,7 +15,7 @@
       "version": "0.1.0",
       "author": {
         "name": "Cybret",
-        "email": "privacy@cybret.ai",
+        "email": "hello@cybret.ai",
         "url": "https://www.cybret.ai"
       },
       "homepage": "https://www.cybret.ai",

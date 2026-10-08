@@ -10,10 +10,10 @@ alwaysApply: false
 
 Follow the full procedure in `skills/triage-cybret-findings/SKILL.md`. The short version:
 
-1. Call `list_open_findings` and sort by severity on the client. An empty list means this credential has nothing open. Point the user at https://app.cybret.ai. Do not invent findings.
+1. Call `list_open_findings`. Use `severity`, `target`, and `limit` when the live schema lists them, then rank what comes back. An empty list means this query has nothing open. Point the user at https://app.cybret.ai. Do not invent findings.
 2. Call `get_finding` for the finding the user picks. Use the live tool schema for argument names. Summarize the validated issue and the remediation in the result.
 3. Implement that remediation in this repo. Keep the change scoped to the finding.
 4. Open or name a pull request that references the finding identifier.
-5. Only then call `mark_status`, which requires scope `findings:write`. Pass the pull request URL if the live schema has a field for it. If the result carries an error payload, report the failure.
+5. Only then call `mark_status`, which requires scope `findings:write`. Pass `link_pr` when the live schema has it. `status` is `open`, `fixed`, or `false_positive`. Linking a pull request does not close the finding. If the result carries an error payload, report the failure.
 
 `list_open_findings` and `get_finding` require `findings:read`. This server does not start scans. Do not ask the user to paste an access token into the chat.

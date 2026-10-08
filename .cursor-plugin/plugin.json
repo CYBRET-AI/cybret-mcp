@@ -4,7 +4,7 @@
   "description": "Pull validated Cybret API and app findings into the editor, fix them in the repo, and mark status when the fix lands.",
   "author": {
     "name": "Cybret",
-    "email": "privacy@cybret.ai"
+    "email": "hello@cybret.ai"
   },
   "homepage": "https://www.cybret.ai",
   "repository": "https://github.com/CYBRET-AI/cybret-mcp",

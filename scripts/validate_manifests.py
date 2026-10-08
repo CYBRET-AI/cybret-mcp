@@ -140,9 +140,9 @@ def check_openai_interface(interface: dict, rel: str) -> None:
     require(interface.get("category") in OPENAI_CATEGORIES, f"{rel} category is not a directory category")
     require(interface.get("developerName") == "Cybret", f"{rel} developerName must match author name")
     require(interface.get("websiteURL") == "https://www.cybret.ai", f"{rel} websiteURL")
+    require(interface.get("supportURL") == "https://www.cybret.ai/support", f"{rel} supportURL")
     require(interface.get("privacyPolicyURL") == "https://www.cybret.ai/privacy", f"{rel} privacyPolicyURL")
     require(interface.get("termsOfServiceURL") == "https://www.cybret.ai/terms", f"{rel} termsOfServiceURL")
-    require("supportURL" not in interface, f"{rel} must omit supportURL until a support page exists")
     prompts = interface.get("defaultPrompt")
     require(isinstance(prompts, list) and len(prompts) <= 3, f"{rel} defaultPrompt max 3")
     if isinstance(prompts, list):
@@ -181,9 +181,14 @@ def check_readme() -> None:
         "cursor://anysphere.cursor-deeplink/mcp/install?name=cybret&config=eyJ1cmwiOiJodHRwczovL21jcC5jeWJyZXQuYWkvbWNwIn0=",
         '"type": "streamable-http"',
         '"url": "https://mcp.cybret.ai/mcp"',
+        "https://www.cybret.ai/docs/mcp",
+        "https://www.cybret.ai/support",
         "https://www.cybret.ai/privacy",
+        "https://www.cybret.ai/privacy#ai-agents-and-mcp-connections",
         "https://www.cybret.ai/terms",
-        "## TODO: docs and support URLs",
+        "## Docs and support",
+        "hello@cybret.ai",
+        "security@cybret.ai",
         "findings:read",
         "findings:write",
         "list_open_findings",
@@ -251,6 +256,8 @@ def main() -> int:
         "server.json remote",
     )
     require("repository" not in server, "server.json must not claim this repo is the server source")
+    require(server.get("version") == "0.1.0", "server.json version stays 0.1.0 until the document changes")
+    require(server.get("websiteUrl") == "https://www.cybret.ai", "server.json websiteUrl stays the product homepage")
 
     dot_mcp = load_json(".mcp.json")
     server_entry_url(dot_mcp, ".mcp.json")
@@ -264,14 +271,36 @@ def main() -> int:
     check_relative(".cursor-plugin/plugin.json", cursor.get("logo", ""), "logo")
     check_relative(".cursor-plugin/plugin.json", cursor.get("skills", ""), "skills")
     check_relative(".cursor-plugin/plugin.json", cursor.get("rules", ""), "rules")
+    cursor_fields = {
+        "name",
+        "version",
+        "description",
+        "author",
+        "homepage",
+        "repository",
+        "license",
+        "keywords",
+        "logo",
+        "rules",
+        "agents",
+        "skills",
+        "commands",
+        "hooks",
+        "mcpServers",
+        "variables",
+    }
+    unknown_cursor = sorted(set(cursor) - cursor_fields)
+    require(not unknown_cursor, f"cursor manifest has fields the Cursor schema does not list: {unknown_cursor}")
+    require(cursor.get("author", {}).get("email") == "hello@cybret.ai", "cursor author.email")
 
     claude = load_json(".claude-plugin/plugin.json")
     require(claude.get("name") == "cybret", "claude plugin name")
     require(claude.get("mcpServers") == "./.mcp.json", "claude mcpServers path")
+    require(claude.get("documentationUrl") == "https://www.cybret.ai/docs/mcp", "claude documentationUrl")
+    require(claude.get("supportUrl") == "https://www.cybret.ai/support", "claude supportUrl")
     require(claude.get("privacyPolicyUrl") == "https://www.cybret.ai/privacy", "claude privacyPolicyUrl")
     require(claude.get("termsOfServiceUrl") == "https://www.cybret.ai/terms", "claude termsOfServiceUrl")
-    require("documentationUrl" not in claude, "claude documentationUrl must stay omitted")
-    require("supportUrl" not in claude, "claude supportUrl must stay omitted")
+    require(claude.get("author", {}).get("email") == "hello@cybret.ai", "claude author.email")
     check_relative(".claude-plugin/plugin.json", claude.get("icon", ""), "icon")
 
     market = load_json(".claude-plugin/marketplace.json")
@@ -291,6 +320,11 @@ def main() -> int:
     require(codex.get("skills") == "./skills/", "codex skills path")
     require(codex.get("mcpServers") == "./.mcp.json", "codex mcpServers must be ./.mcp.json")
     require(codex.get("author", {}).get("name") == "Cybret", "codex author.name")
+    require(codex.get("author", {}).get("email") == "hello@cybret.ai", "codex author.email")
+    notes = codex.get("extensions", {}).get("com.openai", {}).get("publication", {}).get("release_notes", "")
+    lowered = notes.lower() if isinstance(notes, str) else ""
+    require("blocked on docs" not in lowered, "release notes must not list docs as a blocker")
+    require("demo recording" in lowered, "release notes still name the demo-recording blocker")
     check_openai_interface(codex.get("interface", {}), ".codex-plugin/plugin.json")
     codex_ext = codex.get("extensions", {}).get("com.openai", {})
     check_review(codex_ext.get("review", {}), ".codex-plugin/plugin.json")
@@ -300,6 +334,9 @@ def main() -> int:
     require(root_ext.get("interface") == codex.get("interface"), "root and codex interface drifted")
     require(root_ext.get("review") == codex_ext.get("review"), "root and codex review drifted")
     require(root_ext.get("onboardingSkill") == codex_ext.get("onboardingSkill"), "onboarding skill drifted")
+    require(root_ext.get("publication") == codex_ext.get("publication"), "release notes drifted")
+    require(plugin.get("author", {}).get("email") == "hello@cybret.ai", "root plugin author.email")
+    require(market.get("owner", {}).get("email") == "hello@cybret.ai", "marketplace owner.email")
 
     skill = ROOT / "skills/triage-cybret-findings/SKILL.md"
     skill_text = skill.read_text(encoding="utf-8")
