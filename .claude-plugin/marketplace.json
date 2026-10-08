@@ -1,0 +1,28 @@
+{
+  "name": "cybret",
+  "owner": {
+    "name": "Cybret",
+    "email": "privacy@cybret.ai",
+    "url": "https://www.cybret.ai"
+  },
+  "description": "Cybret plugins for coding agents. Validated security findings and remediation status.",
+  "version": "0.1.0",
+  "plugins": [
+    {
+      "name": "cybret",
+      "source": "./",
+      "description": "Validated Cybret API and app security findings, explanations, and remediation status.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Cybret",
+        "email": "privacy@cybret.ai",
+        "url": "https://www.cybret.ai"
+      },
+      "homepage": "https://www.cybret.ai",
+      "repository": "https://github.com/CYBRET-AI/cybret-mcp",
+      "license": "MIT",
+      "keywords": ["security", "findings", "mcp", "vulnerabilities"],
+      "category": "security"
+    }
+  ]
+}

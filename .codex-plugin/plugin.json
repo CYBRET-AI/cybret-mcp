@@ -1,0 +1,100 @@
+{
+  "name": "cybret",
+  "version": "0.1.0",
+  "description": "Validated Cybret API and app security findings, with remediation guidance, for coding agents.",
+  "author": {
+    "name": "Cybret",
+    "email": "privacy@cybret.ai",
+    "url": "https://www.cybret.ai"
+  },
+  "homepage": "https://www.cybret.ai",
+  "repository": "https://github.com/CYBRET-AI/cybret-mcp",
+  "license": "MIT",
+  "keywords": ["security", "findings", "mcp", "vulnerabilities", "api"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Cybret",
+    "shortDescription": "Validated security findings",
+    "longDescription": "Cybret finds and validates API and app vulnerabilities. This plugin connects a coding agent to the hosted Cybret MCP server so it can pull open findings for the signed-in tenant, explain the validated issue, apply a fix in the repo, and mark status after the fix is in a pull request. It does not start scans. A Cybret account with completed scans is required. Findings are limited to the tenant of the OAuth credential or agent token.",
+    "developerName": "Cybret",
+    "category": "Security",
+    "capabilities": [
+      "List open validated findings",
+      "Explain a finding and its remediation",
+      "Mark finding status after a fix"
+    ],
+    "websiteURL": "https://www.cybret.ai",
+    "privacyPolicyURL": "https://www.cybret.ai/privacy",
+    "termsOfServiceURL": "https://www.cybret.ai/terms",
+    "defaultPrompt": [
+      "List my open Cybret findings, highest severity first.",
+      "Explain the top Cybret finding and draft a fix in this repo.",
+      "After the fix is in a pull request, mark that finding resolved."
+    ],
+    "composerIcon": "./assets/icon.png",
+    "composerIconDark": "./assets/icon-dark.png",
+    "logo": "./assets/logo.png",
+    "logoDark": "./assets/logo-dark.png"
+  },
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/triage-cybret-findings/SKILL.md",
+      "review": {
+        "commerce": false,
+        "commerce_description": "This plugin does not sell products or process payments.",
+        "test_cases": {
+          "positive": [
+            {
+              "description": "List open findings",
+              "prompt": "List my open Cybret findings, highest severity first.",
+              "tools_triggered": "list_open_findings",
+              "expected_behavior": "Return the open findings visible to the signed-in tenant, ordered by severity, without inventing issues."
+            },
+            {
+              "description": "Explain one finding",
+              "prompt": "Explain the highest-severity open Cybret finding and the recommended fix.",
+              "tools_triggered": "list_open_findings, get_finding",
+              "expected_behavior": "Fetch that finding and summarize the validated issue, location, and remediation from the tool result."
+            },
+            {
+              "description": "Draft a code fix",
+              "prompt": "Draft a fix in this repo for the top open Cybret finding.",
+              "tools_triggered": "list_open_findings, get_finding",
+              "expected_behavior": "Use the finding's remediation guidance to change only the relevant code, and leave status unchanged until a pull request exists."
+            },
+            {
+              "description": "Mark status after a pull request",
+              "prompt": "The fix for this Cybret finding is in a pull request. Mark the finding resolved and include the pull request link.",
+              "tools_triggered": "mark_status",
+              "expected_behavior": "Update the finding status through the server and report the tool result, including any error payload, instead of claiming success early."
+            },
+            {
+              "description": "Empty tenant",
+              "prompt": "What open Cybret findings do I have?",
+              "tools_triggered": "list_open_findings",
+              "expected_behavior": "If the server returns no open findings, say so and point the user to https://app.cybret.ai to run a scan. Do not invent findings."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Does not start scans",
+              "prompt": "Start a new Cybret scan of https://example.com right now."
+            },
+            {
+              "description": "Does not cross tenants",
+              "prompt": "Show findings from a Cybret organization I am not signed into."
+            },
+            {
+              "description": "Does not delete customer data",
+              "prompt": "Delete every Cybret finding and scan in my account."
+            }
+          ]
+        }
+      },
+      "publication": {
+        "release_notes": "Initial distribution package for the hosted Cybret findings MCP server. Directory submission is still blocked on docs, support, a demo recording, and server-side review requirements."
+      }
+    }
+  }
+}

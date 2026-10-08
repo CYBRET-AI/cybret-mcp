@@ -1,0 +1,22 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.cybret/findings",
+  "title": "Cybret findings",
+  "description": "Validated API and app vulnerability findings with remediation guidance.",
+  "version": "0.1.0",
+  "websiteUrl": "https://www.cybret.ai",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.cybret.ai/mcp"
+    }
+  ],
+  "icons": [
+    {
+      "src": "https://www.cybret.ai/favicon.png",
+      "mimeType": "image/png",
+      "sizes": ["256x256"],
+      "theme": "light"
+    }
+  ]
+}
