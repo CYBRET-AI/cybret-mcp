@@ -26,7 +26,7 @@ That link is the [Cursor MCP install link](https://cursor.com/docs/mcp/install-l
 }
 ```
 
-To install the plugin (server, triage skill, and rule) from this repo once it is public, submit or add it from the Cursor Marketplace. Locally, copy the repo and load it as a Cursor plugin. The manifest is `.cursor-plugin/plugin.json`, and it uses the shared [`mcp.json`](mcp.json).
+To install the plugin (server, triage skill, and rule), add this repository from the Cursor Marketplace once the listing is approved, or load it locally. The manifest is `.cursor-plugin/plugin.json`, and it uses the shared [`mcp.json`](mcp.json).
 
 Manual `~/.cursor/mcp.json` or `.cursor/mcp.json`:
 
@@ -52,7 +52,7 @@ claude mcp add --transport http cybret https://mcp.cybret.ai/mcp
 
 Then authenticate with `/mcp`.
 
-From this marketplace, after the repository is reachable:
+From this marketplace:
 
 ```text
 /plugin marketplace add CYBRET-AI/cybret-mcp
@@ -128,13 +128,13 @@ A header on the request skips the OAuth login. The token's own scopes decide whe
 
 ## Tools
 
-The live server requires a credential, so this package could not call `tools/list`. Protected-resource metadata fetched from `https://mcp.cybret.ai/.well-known/oauth-protected-resource/mcp` on 2026-10-07 advertises `findings:read` and `findings:write`. Tool names below are from the same day's review of the private server (`src/api_scanner/mcp/server.py`). Argument names were not re-checked here. Agents must use the input schema the connected server advertises.
+Names and parameters below are the contract published at [Docs: MCP server](https://www.cybret.ai/docs/mcp). Protected-resource metadata at `https://mcp.cybret.ai/.well-known/oauth-protected-resource/mcp` advertises `findings:read` and `findings:write`. Agents should still read the input schema from the connected server before calling a tool.
 
-| Tool | Scope | Behavior described by that review |
+| Tool | Scope | Arguments |
 | --- | --- | --- |
-| `list_open_findings` | `findings:read` | Returns the tenant's open findings. No severity, repository, or pagination arguments. |
-| `get_finding` | `findings:read` | Returns one finding, including the explanation and remediation guidance. |
-| `mark_status` | `findings:write` | Updates a finding's status. The review describes a pull-request link argument. |
+| `list_open_findings` | `findings:read` | Optional `severity` (`info`, `low`, `medium`, `high`, `critical`), optional `target` (repo `owner/name` or a scan run id, at most 200 characters), and `limit` from 1 to 100 (default 25). |
+| `get_finding` | `findings:read` | `finding_id` (required). Returns reproduction, location, and remediation. |
+| `mark_status` | `findings:write` | `finding_id` and `status` (`open`, `fixed`, or `false_positive`) are required. Optional `note` (required for `false_positive`, and for `fixed` when there is no verify or retest proof). Optional `link_pr` (`owner/repo#n` or a GitHub pull request URL). Linking a pull request does not close the finding. |
 
 The triage workflow is [`skills/triage-cybret-findings/SKILL.md`](skills/triage-cybret-findings/SKILL.md). Cursor also loads [`rules/triage-cybret-findings.mdc`](rules/triage-cybret-findings.mdc).
 
@@ -143,16 +143,14 @@ The triage workflow is [`skills/triage-cybret-findings/SKILL.md`](skills/triage-
 - The credential selects the tenant. OAuth is the signed-in Cybret user. An agent token is the user who created it. The server does not accept a tenant id that would cross that boundary.
 - `findings:read` can list and read findings. `findings:write` can change status. Connect read-only when the agent should not update Cybret.
 - Do not commit tokens, and do not paste them into chat. The checked-in configs contain only `https://mcp.cybret.ai/mcp`.
-- Customer findings are customer data. How Cybret handles personal information is in the [privacy policy](https://www.cybret.ai/privacy). Use of the service is covered by the [terms](https://www.cybret.ai/terms).
+- Customer findings are customer data. The [privacy policy](https://www.cybret.ai/privacy) describes this in [AI agents and MCP connections](https://www.cybret.ai/privacy#ai-agents-and-mcp-connections): tool results go to the AI client you choose, limited to the workspace and scopes you approved. Use of the service is covered by the [terms](https://www.cybret.ai/terms).
 
-## TODO: docs and support URLs
+## Docs and support
 
-These pages do not exist yet. Directory submissions that require them are blocked until they do. Do not invent stand-ins in the manifests.
-
-- Documentation URL: none. `https://www.cybret.ai/docs` returned 404 on 2026-10-07, and `docs.cybret.ai` was not a live docs host in that review.
-- Support URL: none. `https://www.cybret.ai/support` returned 404 on 2026-10-07. The privacy policy publishes `privacy@cybret.ai` for privacy requests. That is not a support page.
-
-When those URLs exist, add them to the Claude manifest (`documentationUrl`, `supportUrl`) and the OpenAI interface (`supportURL`), and link them from this section.
+- Documentation: [MCP server](https://www.cybret.ai/docs/mcp) — install, tools, scopes, and authentication.
+- Support: [cybret.ai/support](https://www.cybret.ai/support). Email [hello@cybret.ai](mailto:hello@cybret.ai). Report a vulnerability to [security@cybret.ai](mailto:security@cybret.ai).
+- Privacy: [cybret.ai/privacy](https://www.cybret.ai/privacy), including the AI agents and MCP connections section. Privacy requests still go to privacy@cybret.ai.
+- Terms: [cybret.ai/terms](https://www.cybret.ai/terms).
 
 ## Layout
 

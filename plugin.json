@@ -5,7 +5,7 @@
   "description": "Validated Cybret API and app security findings, with remediation guidance, for coding agents.",
   "author": {
     "name": "Cybret",
-    "email": "privacy@cybret.ai",
+    "email": "hello@cybret.ai",
     "url": "https://www.cybret.ai"
   },
   "homepage": "https://www.cybret.ai",
@@ -27,6 +27,7 @@
           "Mark finding status after a fix"
         ],
         "websiteURL": "https://www.cybret.ai",
+        "supportURL": "https://www.cybret.ai/support",
         "privacyPolicyURL": "https://www.cybret.ai/privacy",
         "termsOfServiceURL": "https://www.cybret.ai/terms",
         "defaultPrompt": [
@@ -92,7 +93,7 @@
         }
       },
       "publication": {
-        "release_notes": "Initial distribution package for the hosted Cybret findings MCP server. Directory submission is still blocked on docs, support, a demo recording, and server-side review requirements."
+        "release_notes": "Initial distribution package for the hosted Cybret findings MCP server. Docs, support, and the privacy policy's AI agents section are published. Directory submission is still blocked on a demo recording and server-side review requirements."
       }
     }
   }

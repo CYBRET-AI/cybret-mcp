@@ -5,7 +5,7 @@
   "description": "Validated Cybret API and app security findings, explanations, and remediation status.",
   "author": {
     "name": "Cybret",
-    "email": "privacy@cybret.ai",
+    "email": "hello@cybret.ai",
     "url": "https://www.cybret.ai"
   },
   "homepage": "https://www.cybret.ai",
@@ -13,6 +13,8 @@
   "license": "MIT",
   "keywords": ["security", "findings", "mcp", "vulnerabilities"],
   "icon": "./assets/icon.png",
+  "documentationUrl": "https://www.cybret.ai/docs/mcp",
+  "supportUrl": "https://www.cybret.ai/support",
   "privacyPolicyUrl": "https://www.cybret.ai/privacy",
   "termsOfServiceUrl": "https://www.cybret.ai/terms",
   "skills": "./skills/",
